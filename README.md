@@ -1,5 +1,5 @@
 # Game Title
-## Author: Anna Szymanek
+## Author: Julia
 
 ### Short description
 
