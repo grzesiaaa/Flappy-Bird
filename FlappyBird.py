@@ -2,7 +2,7 @@ import pygame
 import os
 from pygame.locals import *
 import sys
-
+import random
 
 SCREEN_WIDTH = 400
 SCREEN_HEIGHT = 600
@@ -33,6 +33,33 @@ class Floor(pygame.sprite.Sprite):
         screen.blit(self.floor, (self.position + 400, 500))
 
 
+class Pipe(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.green_bottom = pygame.transform.scale(load_image("green_bottom.png"), (100, 350))
+        self.green_top = pygame.transform.scale(load_image('green_top.png'), (100, 350))
+        self.list_bottom = []
+        self.list_top = []
+
+    def create_bottom(self):
+        self.random_height = random.randrange(150, 440)
+        self.bottom = self.green_bottom.get_rect(midtop=(430, self.random_height))
+        return self.bottom
+
+    def create_top(self):
+        self.top = self.green_bottom.get_rect(midbottom=(430, self.bottom.centery - 250))
+        return self.top
+
+    def move(self):
+        for i in self.list_bottom:
+            i.centerx -= 3
+            screen.blit(self.green_bottom, i)
+        for i in self.list_top:
+            i.centerx -= 3
+            screen.blit(self.green_top, i)
+
+
+pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
 pygame.display.set_caption("Flappy Bird")
 fps = pygame.time.Clock()
@@ -43,11 +70,12 @@ start_image = pygame.transform.scale(start_image, (200,300))
 start_image_rect = start_image.get_rect(center=(200,270))
 game_over_im = load_image("gameover.png")
 click_to_play = load_image("startclick.png")
-green_pipe = load_image("green_pipe.png")
+SHOWPIPE = pygame.USEREVENT
+pygame.time.set_timer(SHOWPIPE, 1000)
 
+pipe = Pipe()
 bird = Bird()
 floor = Floor()
-bird_mov = 0
 
 
 def flap():
@@ -86,17 +114,23 @@ def flap():
                 if event.key == pygame.K_SPACE:
                     bird_mov = 0
                     bird_mov += -2
+            if event.type == SHOWPIPE:
+                pipe.list_bottom.append(pipe.create_bottom())
+                pipe.list_top.append(pipe.create_top())
+
         bird_mov += 0.1
         bird.rect.centery += bird_mov
         if bird.rect.centery <= 12:
             bird.rect.centery = 12  #sufit
-
         if bird.rect.centery >= 490:
             bird.rect.centery = 490
             screen.blit(floor.floor, (0, 500))
             screen.blit(game_over_im, (100,100))
             screen.blit(click_to_play, (110,250))
+            pipe.list_top.clear()
+            pipe.list_bottom.clear()
         else:
+            pipe.move()
             floor.position += -1
             floor.move()
             if floor.position <= -400:
@@ -104,3 +138,5 @@ def flap():
 
         pygame.display.update()
         fps.tick(100)
+
+flap()
