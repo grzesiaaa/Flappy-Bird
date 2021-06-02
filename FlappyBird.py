@@ -65,6 +65,16 @@ class Pipe(pygame.sprite.Sprite):
                     return True
 
 
+def show_score(score, option = 'game_in'):
+    font = pygame.font.Font('font.TTF', 40)
+    if option == 'game_over':
+        result = font.render(f"SCORE: {int(score)}", True, (255, 255, 255))
+        screen.blit(result, (120,40))
+    elif option == 'game_in':
+        result = font.render(f"{int(score)}", True, (255, 255, 255))
+        screen.blit(result, (185,40))
+
+
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
 pygame.display.set_caption("Flappy Bird")
@@ -88,6 +98,7 @@ def flap():
     bird_mov = 0
     waiting = True
     game = True
+    score = 0
 
     while True:
         screen.blit(background_day, (0, 0))
@@ -116,11 +127,15 @@ def flap():
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
+                if not game:
+                    score = 0
                 game = True
                 bird_mov = 0
                 bird_mov += -2.3
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
+                    if not game:
+                        score = 0
                     game = True
                     bird_mov = 0
                     bird_mov += -2.3
@@ -139,12 +154,17 @@ def flap():
             floor.move()
             if floor.position <= -400:
                 floor.position = 0
+            for i in pipe.list_bottom:
+                if i.centerx == bird.rect.centerx - 20:
+                    score += 1
+            show_score(score, 'game_in')
         else:
             screen.blit(floor.floor, (0, 500))
             screen.blit(game_over_im, (100, 100))
             screen.blit(click_to_play, (110, 250))
             pipe.list_top.clear()
             pipe.list_bottom.clear()
+            show_score(score, 'game_over')
 
         if pipe.collision():
             game = False
