@@ -36,8 +36,8 @@ class Floor(pygame.sprite.Sprite):
 class Pipe(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.green_bottom = pygame.transform.scale(load_image("green_bottom.png"), (100, 350))
-        self.green_top = pygame.transform.scale(load_image('green_top.png'), (100, 350))
+        self.green_bottom = pygame.transform.scale(load_image("green_bottom.png"), (60, 350))
+        self.green_top = pygame.transform.scale(load_image('green_top.png'), (60, 350))
         self.list_bottom = []
         self.list_top = []
 
@@ -47,16 +47,22 @@ class Pipe(pygame.sprite.Sprite):
         return self.bottom
 
     def create_top(self):
-        self.top = self.green_bottom.get_rect(midbottom=(430, self.bottom.centery - 250))
+        self.top = self.green_bottom.get_rect(midbottom=(427, self.bottom.centery - 260))
         return self.top
 
     def move(self):
         for i in self.list_bottom:
-            i.centerx -= 3
+            i.centerx -= 2
             screen.blit(self.green_bottom, i)
         for i in self.list_top:
-            i.centerx -= 3
+            i.centerx -= 2
             screen.blit(self.green_top, i)
+
+    def collision(self):
+        for i in self.list_bottom:
+            for j in self.list_top:
+                if i.colliderect(bird.rect) or j.colliderect(bird.rect):
+                    return True
 
 
 pygame.init()
@@ -71,7 +77,7 @@ start_image_rect = start_image.get_rect(center=(200,270))
 game_over_im = load_image("gameover.png")
 click_to_play = load_image("startclick.png")
 SHOWPIPE = pygame.USEREVENT
-pygame.time.set_timer(SHOWPIPE, 1000)
+pygame.time.set_timer(SHOWPIPE, 1300)
 
 pipe = Pipe()
 bird = Bird()
@@ -81,6 +87,8 @@ floor = Floor()
 def flap():
     bird_mov = 0
     waiting = True
+    game = True
+
     while True:
         screen.blit(background_day, (0, 0))
         screen.blit(bird.red_mid, bird.rect)
@@ -96,9 +104,9 @@ def flap():
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
-                        waiting=False
+                        waiting = False
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    waiting=False
+                    waiting = False
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
@@ -108,35 +116,44 @@ def flap():
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                    bird_mov = 0
-                    bird_mov += -2
+                game = True
+                bird_mov = 0
+                bird_mov += -2.3
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
+                    game = True
                     bird_mov = 0
-                    bird_mov += -2
+                    bird_mov += -2.3
             if event.type == SHOWPIPE:
                 pipe.list_bottom.append(pipe.create_bottom())
                 pipe.list_top.append(pipe.create_top())
 
         bird_mov += 0.1
         bird.rect.centery += bird_mov
-        if bird.rect.centery <= 12:
-            bird.rect.centery = 12  #sufit
-        if bird.rect.centery >= 490:
-            bird.rect.centery = 490
-            screen.blit(floor.floor, (0, 500))
-            screen.blit(game_over_im, (100,100))
-            screen.blit(click_to_play, (110,250))
-            pipe.list_top.clear()
-            pipe.list_bottom.clear()
-        else:
+
+        if game:
+            if bird.rect.centery <= 12:
+                bird.rect.centery = 12  #sufit
             pipe.move()
             floor.position += -1
             floor.move()
             if floor.position <= -400:
                 floor.position = 0
+        else:
+            screen.blit(floor.floor, (0, 500))
+            screen.blit(game_over_im, (100, 100))
+            screen.blit(click_to_play, (110, 250))
+            pipe.list_top.clear()
+            pipe.list_bottom.clear()
+
+        if pipe.collision():
+            game = False
+        elif bird.rect.centery >= 490:
+            bird.rect.centery = 490
+            game = False
 
         pygame.display.update()
         fps.tick(100)
+
 
 flap()
