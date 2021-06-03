@@ -98,34 +98,121 @@ pipe = Pipe()
 bird = Bird()
 floor = Floor()
 
+def menu():
+    font = pygame.font.Font('font.TTF', 30)
+    screen.blit(background_day, (0, 0))
+    screen.blit(floor.floor, (0, 500))
+    screen.blit(start_image, (100, 20))
+
+    pygame.draw.rect(screen, (205, 32, 32), pygame.Rect(60, 340, 130, 40))
+    pygame.draw.rect(screen, (205, 32, 32), pygame.Rect(210, 340, 130, 40))
+    pygame.draw.rect(screen, (205, 32, 32), pygame.Rect(60, 395, 130, 40))
+    pygame.draw.rect(screen, (205, 32, 32), pygame.Rect(210, 395, 130, 40))
+    pygame.draw.rect(screen, (205, 32, 32), pygame.Rect(60, 450, 130, 40))
+    pygame.draw.rect(screen, (205, 32, 32), pygame.Rect(210, 450, 130, 40))
+
+    white = (255, 255, 255)
+    green = (51, 255, 51)
+    m = True
+    selected = 'Start'
+
+    while m:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if selected == "Start":
+                    if event.key == pygame.K_DOWN:
+                        selected = "Options"
+                    if event.key == pygame.K_RIGHT:
+                        selected = "Rules"
+                elif selected == "Rules":
+                    if event.key == pygame.K_LEFT:
+                        selected = "Start"
+                    if event.key == pygame.K_DOWN:
+                        selected = "Records"
+                elif selected == "Options":
+                    if event.key == pygame.K_UP:
+                        selected = "Start"
+                    if event.key == pygame.K_DOWN:
+                        selected = "Author"
+                    if event.key == pygame.K_RIGHT:
+                        selected = "Records"
+                elif selected == "Records":
+                    if event.key == pygame.K_UP:
+                        selected = "Rules"
+                    if event.key == pygame.K_DOWN:
+                        selected = "Exit"
+                    if event.key == pygame.K_LEFT:
+                        selected = "Options"
+                elif selected == "Author":
+                    if event.key == pygame.K_UP:
+                        selected = "Options"
+                    if event.key == pygame.K_RIGHT:
+                        selected = "Exit"
+                elif selected == "Exit":
+                    if event.key == pygame.K_UP:
+                        selected = "Records"
+                    if event.key == pygame.K_LEFT:
+                        selected = "Author"
+                if event.key == pygame.K_RETURN:
+                    if selected == "Start":
+                        flap()
+                    if selected == "Exit":
+                        pygame.quit()
+                        sys.exit()
+                    if selected == "Rules":
+                        pass
+                    if selected == "Options":
+                        pass
+                    if selected == "Records":
+                        pass
+                    if selected == "Author":
+                        pass
+        if selected == "Start":
+            start_text = font.render(f"Start", True, green)
+        else:
+            start_text = font.render(f"Start", True, white)
+        if selected == "Exit":
+            exit_text = font.render(f"Exit", True, green)
+        else:
+            exit_text = font.render(f"Exit", True, white)
+        if selected == "Rules":
+            rules_text = font.render(f"Rules", True, green)
+        else:
+            rules_text = font.render(f"Rules", True, white)
+        if selected == "Author":
+            author_text = font.render(f"Author", True, green)
+        else:
+            author_text = font.render(f"Author", True, white)
+        if selected == "Records":
+            scores_text = font.render(f"Records", True, green)
+        else:
+            scores_text = font.render(f"Records", True, white)
+        if selected == "Options":
+            options_text = font.render(f"Options", True, green)
+        else:
+            options_text = font.render(f"Options", True, white)
+
+        screen.blit(start_text, (80, 345))
+        screen.blit(rules_text, (235, 345))
+        screen.blit(options_text, (70, 400))
+        screen.blit(scores_text, (215, 400))
+        screen.blit(author_text, (75, 455))
+        screen.blit(exit_text, (245, 455))
+
+        pygame.display.update()
+        fps.tick(100)
 
 def flap():
     bird_mov = 0
-    waiting = True
     game = True
     score = 0
 
     while True:
         screen.blit(background_day, (0, 0))
         screen.blit(bird.red_mid, bird.rect)
-
-        while waiting:
-            screen.blit(start_image, start_image_rect)
-            floor.position += -1
-            floor.move()
-            if floor.position <= -400:
-                floor.position = 0
-            fps.tick(100)
-            pygame.display.update()
-            for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE:
-                        waiting = False
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    waiting = False
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -180,4 +267,4 @@ def flap():
         fps.tick(100)
 
 
-flap()
+menu()
