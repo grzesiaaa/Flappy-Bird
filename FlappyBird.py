@@ -3,6 +3,8 @@ import os
 from pygame.locals import *
 import sys
 import random
+import pickle
+
 
 SCREEN_WIDTH = 400
 SCREEN_HEIGHT = 600
@@ -65,7 +67,7 @@ class Pipe(pygame.sprite.Sprite):
                     return True
 
 
-def show_score(score, option = 'game_in'):
+def show_score(score, high_score, option):
     font = pygame.font.Font('font.TTF', 40)
     if option == 'game_over':
         result = font.render(f"SCORE: {int(score)}", True, (255, 255, 255))
@@ -73,6 +75,9 @@ def show_score(score, option = 'game_in'):
     elif option == 'game_in':
         result = font.render(f"{int(score)}", True, (255, 255, 255))
         screen.blit(result, (185,40))
+    elif option == 'high_score':
+        result = font.render(f"HIGH SCORE: {int(high_score)}", True, (255,255,255))
+        screen.blit(result, (70,450))
 
 
 pygame.init()
@@ -126,14 +131,7 @@ def flap():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if not game:
-                    score = 0
-                game = True
-                bird_mov = 0
-                bird_mov += -2.3
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
+            if (event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE) or event.type == pygame.MOUSEBUTTONDOWN:
                     if not game:
                         score = 0
                     game = True
@@ -155,16 +153,22 @@ def flap():
             if floor.position <= -400:
                 floor.position = 0
             for i in pipe.list_bottom:
-                if i.centerx == bird.rect.centerx - 20:
+                if i.centerx == bird.rect.centerx - 40:
                     score += 1
-            show_score(score, 'game_in')
+            show_score(score, 0,'game_in')
         else:
             screen.blit(floor.floor, (0, 500))
             screen.blit(game_over_im, (100, 100))
             screen.blit(click_to_play, (110, 250))
             pipe.list_top.clear()
             pipe.list_bottom.clear()
-            show_score(score, 'game_over')
+            show_score(score, 0,'game_over')
+            with open('high_score.dat', 'rb') as file:
+                last_high = pickle.load(file)
+                if score > last_high:
+                    with open('high_score.dat', 'wb') as f:
+                        pickle.dump(score, f)
+            show_score(score, pickle.load(open('high_score.dat', 'rb')), 'high_score')
 
         if pipe.collision():
             game = False
