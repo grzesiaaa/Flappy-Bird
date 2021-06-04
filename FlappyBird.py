@@ -1,13 +1,14 @@
 import pygame
 import os
-from pygame.locals import *
 import sys
 import random
 import pickle
 
-
 SCREEN_WIDTH = 400
 SCREEN_HEIGHT = 600
+WHITE = (255, 255, 255)
+GREEN = (51, 255, 51)
+RED = (205, 32, 32)
 
 
 def load_image(name):
@@ -16,6 +17,10 @@ def load_image(name):
     image = image.convert_alpha()
     return image
 
+def load_sound(name):
+    fullname = os.path.join("sounds", name)
+    sound = pygame.mixer.Sound(fullname)
+    return sound
 
 class Bird(pygame.sprite.Sprite):
     def __init__(self):
@@ -77,7 +82,7 @@ def show_score(score, high_score, option):
         screen.blit(result, (185,40))
     elif option == 'high_score':
         result = font.render(f"HIGH SCORE: {int(high_score)}", True, (255,255,255))
-        screen.blit(result, (70,450))
+        screen.blit(result, (70,180))
 
 
 pygame.init()
@@ -91,32 +96,168 @@ start_image = pygame.transform.scale(start_image, (200,300))
 start_image_rect = start_image.get_rect(center=(200,270))
 game_over_im = load_image("gameover.png")
 click_to_play = load_image("startclick.png")
-SHOWPIPE = pygame.USEREVENT
-pygame.time.set_timer(SHOWPIPE, 1300)
+die_sound = load_sound('die.wav')
+hit_sound = load_sound('hit.wav')
+point_sound = load_sound('point.wav')
+flap_sound = load_sound('flap.wav')
+flappy_im = pygame.transform.scale(load_image('flappy.png'), (200,100))
 
 pipe = Pipe()
 bird = Bird()
 floor = Floor()
 
+def rules():
+    font1 = pygame.font.Font('font.TTF', 50)
+    font2 = pygame.font.SysFont('arial', 20)
+    font3 = pygame.font.SysFont('Consolas', 20)
+    rul = True
+    while rul:
+        screen.blit(background_day, (0,0))
+        screen.blit(flappy_im, (100,40))
+        headline = font1.render("Game Rules", True,  WHITE)
+        screen.blit(headline, (60,120))
+        line1 = font2.render("lalala pitu pitu", True, WHITE)
+        line5 = font3.render("Press SPACE to go back.", True, RED)
+        screen.blit(line1, (20,210))
+        screen.blit(line5, (70,490))
+        pygame.display.update()
+        fps.tick(100)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    rul = False
+                    menu()
+
+def author_info():
+    font1 = pygame.font.Font('font.TTF', 50)
+    font2 = pygame.font.SysFont('arial', 20)
+    font3 = pygame.font.SysFont('Consolas', 20)
+    info = True
+    while info:
+        screen.blit(background_day, (0,0))
+        screen.blit(flappy_im, (100, 40))
+        headline = font1.render("Author", True, WHITE)
+        screen.blit(headline, (100, 120))
+        line5 = font3.render("Press SPACE to go back.", True, RED)
+        screen.blit(line5, (70, 490))
+        pygame.display.update()
+        fps.tick(100)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    info = False
+                    menu()
+
+def choose_bird():
+    font2 = pygame.font.SysFont('arial', 20)
+    choosen = 1
+    while True:
+        pygame.display.update()
+        fps.tick(100)
+        screen.blit(load_image('redbird_mid.png'), (50,200))
+        screen.blit(load_image('yellowbird_mid.png'), (50,250))
+        screen.blit(load_image('bluebird_mid.png'), (50,300))
+        text1 = font2.render("Press 1", True, WHITE)
+        text2 = font2.render("Press 2", True, WHITE)
+        text3 = font2.render("Press 3", True, WHITE)
+        screen.blit(text1, (100,200))
+        screen.blit(text2, (100, 250))
+        screen.blit(text3, (100, 300))
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    menu()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_1:
+                    choosen = 1
+                if event.key == pygame.K_2:
+                    choosen = 2
+                if event.key == pygame.K_3:
+                    choosen = 3
+                return choosen
+
+
+def show_options():
+    font1 = pygame.font.Font('font.TTF', 50)
+    font2 = pygame.font.SysFont('arial', 20)
+    font3 = pygame.font.SysFont('Consolas', 20)
+    options = True
+    while options:
+        screen.blit(background_day, (0, 0))
+        screen.blit(flappy_im, (100, 40))
+        headline = font1.render("Options", True, WHITE)
+        screen.blit(headline, (100, 120))
+        line5 = font3.render("Press SPACE to go back.", True, RED)
+        screen.blit(line5, (70, 490))
+        pygame.display.update()
+        fps.tick(100)
+        choose_bird()
+
+def show_records():
+    font1 = pygame.font.Font('font.TTF', 50)
+    font3 = pygame.font.SysFont('Consolas', 20)
+    with open('high_score1.dat', 'rb') as file:
+        scores = pickle.load(file)
+    show = True
+    while show:
+        screen.blit(background_day, (0, 0))
+        screen.blit(flappy_im, (100, 40))
+        headline = font1.render("High Scores", True, WHITE)
+        screen.blit(headline, (50, 100))
+        line1 = font1.render(str(scores), True, WHITE)
+        screen.blit(line1, (150,300))
+        line5 = font3.render("Press SPACE to go back.", True, RED)
+        screen.blit(line5, (70, 490))
+        pygame.display.update()
+        fps.tick(100)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    show = False
+                    menu()
+
+def update_high_scores(score):
+    with open('high_score1.dat', 'rb') as file:
+        last_high = pickle.load(file)
+        if score > last_high:
+            with open('high_score1.dat', 'wb') as f:
+                pickle.dump(score, f)
+
 def menu():
     font = pygame.font.Font('font.TTF', 30)
+    font2 = pygame.font.SysFont('Consolas', 20)
+    text = font2.render("Press SPACE to choose", True, RED)
+
     screen.blit(background_day, (0, 0))
     screen.blit(floor.floor, (0, 500))
     screen.blit(start_image, (100, 20))
+    screen.blit(bird.red_mid, bird.rect)
 
-    pygame.draw.rect(screen, (205, 32, 32), pygame.Rect(60, 340, 130, 40))
-    pygame.draw.rect(screen, (205, 32, 32), pygame.Rect(210, 340, 130, 40))
-    pygame.draw.rect(screen, (205, 32, 32), pygame.Rect(60, 395, 130, 40))
-    pygame.draw.rect(screen, (205, 32, 32), pygame.Rect(210, 395, 130, 40))
-    pygame.draw.rect(screen, (205, 32, 32), pygame.Rect(60, 450, 130, 40))
-    pygame.draw.rect(screen, (205, 32, 32), pygame.Rect(210, 450, 130, 40))
+    pygame.draw.rect(screen, RED, pygame.Rect(60, 340, 130, 40))
+    pygame.draw.rect(screen, RED, pygame.Rect(210, 340, 130, 40))
+    pygame.draw.rect(screen, RED, pygame.Rect(60, 395, 130, 40))
+    pygame.draw.rect(screen, RED, pygame.Rect(210, 395, 130, 40))
+    pygame.draw.rect(screen, RED, pygame.Rect(60, 450, 130, 40))
+    pygame.draw.rect(screen, RED, pygame.Rect(210, 450, 130, 40))
 
-    white = (255, 255, 255)
-    green = (51, 255, 51)
     m = True
     selected = 'Start'
 
     while m:
+        screen.blit(text, (80, 560))
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -156,44 +297,44 @@ def menu():
                         selected = "Records"
                     if event.key == pygame.K_LEFT:
                         selected = "Author"
-                if event.key == pygame.K_RETURN:
+                if event.key == pygame.K_SPACE:
                     if selected == "Start":
                         flap()
                     if selected == "Exit":
                         pygame.quit()
                         sys.exit()
                     if selected == "Rules":
-                        pass
+                        rules()
                     if selected == "Options":
-                        pass
+                        show_options()
                     if selected == "Records":
-                        pass
+                        show_records()
                     if selected == "Author":
-                        pass
+                        author_info()
         if selected == "Start":
-            start_text = font.render(f"Start", True, green)
+            start_text = font.render(f"Start", True, GREEN)
         else:
-            start_text = font.render(f"Start", True, white)
+            start_text = font.render(f"Start", True,  WHITE)
         if selected == "Exit":
-            exit_text = font.render(f"Exit", True, green)
+            exit_text = font.render(f"Exit", True, GREEN)
         else:
-            exit_text = font.render(f"Exit", True, white)
+            exit_text = font.render(f"Exit", True,  WHITE)
         if selected == "Rules":
-            rules_text = font.render(f"Rules", True, green)
+            rules_text = font.render(f"Rules", True, GREEN)
         else:
-            rules_text = font.render(f"Rules", True, white)
+            rules_text = font.render(f"Rules", True,  WHITE)
         if selected == "Author":
-            author_text = font.render(f"Author", True, green)
+            author_text = font.render(f"Author", True, GREEN)
         else:
-            author_text = font.render(f"Author", True, white)
+            author_text = font.render(f"Author", True,  WHITE)
         if selected == "Records":
-            scores_text = font.render(f"Records", True, green)
+            scores_text = font.render(f"Records", True, GREEN)
         else:
-            scores_text = font.render(f"Records", True, white)
+            scores_text = font.render(f"Records", True,  WHITE)
         if selected == "Options":
-            options_text = font.render(f"Options", True, green)
+            options_text = font.render(f"Options", True, GREEN)
         else:
-            options_text = font.render(f"Options", True, white)
+            options_text = font.render(f"Options", True, WHITE)
 
         screen.blit(start_text, (80, 345))
         screen.blit(rules_text, (235, 345))
@@ -201,14 +342,16 @@ def menu():
         screen.blit(scores_text, (215, 400))
         screen.blit(author_text, (75, 455))
         screen.blit(exit_text, (245, 455))
-
         pygame.display.update()
         fps.tick(100)
 
 def flap():
+    SHOWPIPE = pygame.USEREVENT
+    pygame.time.set_timer(SHOWPIPE, 1300)
     bird_mov = 0
     game = True
     score = 0
+    sound = True
 
     while True:
         screen.blit(background_day, (0, 0))
@@ -221,47 +364,60 @@ def flap():
             if (event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE) or event.type == pygame.MOUSEBUTTONDOWN:
                     if not game:
                         score = 0
+                    flap_sound.play()
                     game = True
+                    sound = True
                     bird_mov = 0
                     bird_mov += -2.3
             if event.type == SHOWPIPE:
                 pipe.list_bottom.append(pipe.create_bottom())
                 pipe.list_top.append(pipe.create_top())
+            if event.type == pygame.KEYDOWN:
+                if not game:
+                    if event.key == pygame.K_RETURN:
+                        score = 0
+                        bird.rect.center = (50, 270)
+                        pipe.list_top.clear()
+                        pipe.list_bottom.clear()
+                        menu()
 
         bird_mov += 0.1
         bird.rect.centery += bird_mov
-
         if game:
             if bird.rect.centery <= 12:
                 bird.rect.centery = 12  #sufit
             pipe.move()
-            floor.position += -1
+            floor.position += -2
             floor.move()
             if floor.position <= -400:
                 floor.position = 0
             for i in pipe.list_bottom:
                 if i.centerx == bird.rect.centerx - 40:
                     score += 1
+                    point_sound.play()
             show_score(score, 0,'game_in')
-        else:
+        if not game:
             screen.blit(floor.floor, (0, 500))
             screen.blit(game_over_im, (100, 100))
             screen.blit(click_to_play, (110, 250))
+            font3 = pygame.font.SysFont('Consolas', 20)
+            screen.blit(font3.render("Press ENTER to go to menu.", True, RED), (60,535))
+            screen.blit(font3.render("Press SPACE to play", True, RED), (90,565))
             pipe.list_top.clear()
             pipe.list_bottom.clear()
             show_score(score, 0,'game_over')
-            with open('high_score.dat', 'rb') as file:
-                last_high = pickle.load(file)
-                if score > last_high:
-                    with open('high_score.dat', 'wb') as f:
-                        pickle.dump(score, f)
-            show_score(score, pickle.load(open('high_score.dat', 'rb')), 'high_score')
+            update_high_scores(score)
+            show_score(score, pickle.load(open('high_score1.dat', 'rb')), 'high_score')
 
         if pipe.collision():
             game = False
+            die_sound.play()
         elif bird.rect.centery >= 490:
             bird.rect.centery = 490
             game = False
+            if sound:
+                hit_sound.play()
+                sound = False
 
         pygame.display.update()
         fps.tick(100)
