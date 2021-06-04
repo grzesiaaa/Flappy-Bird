@@ -101,6 +101,9 @@ hit_sound = load_sound('hit.wav')
 point_sound = load_sound('point.wav')
 flap_sound = load_sound('flap.wav')
 flappy_im = pygame.transform.scale(load_image('flappy.png'), (200,100))
+gold_medal = pygame.transform.scale(load_image('gold.png'), (50,50))
+silver_medal = pygame.transform.scale(load_image('silver.png'), (50,50))
+bronze_medal = pygame.transform.scale(load_image('bronze.png'), (50,50))
 
 pipe = Pipe()
 bird = Bird()
@@ -133,16 +136,26 @@ def rules():
 
 def author_info():
     font1 = pygame.font.Font('font.TTF', 50)
-    font2 = pygame.font.SysFont('arial', 20)
+    font2 = pygame.font.SysFont('arial', 25)
     font3 = pygame.font.SysFont('Consolas', 20)
     info = True
     while info:
         screen.blit(background_day, (0,0))
-        screen.blit(flappy_im, (100, 40))
+        screen.blit(flappy_im, (95, 40))
         headline = font1.render("Author", True, WHITE)
-        screen.blit(headline, (100, 120))
-        line5 = font3.render("Press SPACE to go back.", True, RED)
-        screen.blit(line5, (70, 490))
+        screen.blit(headline, (110, 120))
+        line1 = font2.render("Hi! I am Julia and this is a Flappy Bird", True, WHITE)
+        line2 = font2.render("game - the most annoying game in the", True, WHITE)
+        line3 = font2.render("world! But to be honest one of my", True, WHITE)
+        line4 = font2.render("favourite and that's why I've decided to ", True, WHITE)
+        line5 = font2.render("make it :). I hope you will enjoy it too!", True, WHITE)
+        line6 = font3.render("Press SPACE to go back.", True, RED)
+        screen.blit(line1, (20, 190))
+        screen.blit(line2, (20, 220))
+        screen.blit(line3,(20,250))
+        screen.blit(line4, (20,280))
+        screen.blit(line5, (20,310))
+        screen.blit(line6, (70, 490))
         pygame.display.update()
         fps.tick(100)
         for event in pygame.event.get():
@@ -204,17 +217,29 @@ def show_options():
 
 def show_records():
     font1 = pygame.font.Font('font.TTF', 50)
+    font2 = pygame.font.SysFont('arial', 50)
     font3 = pygame.font.SysFont('Consolas', 20)
-    with open('high_score1.dat', 'rb') as file:
-        scores = pickle.load(file)
+    screen.blit(background_day, (0, 0))
+    with open('high_score4.dat', 'rb') as file:
+        score1 = pickle.load(file)
+    with open('high_score3.dat', 'rb') as file:
+        score2 = pickle.load(file)
+    with open('high_score2.dat', 'rb') as file:
+        score3 = pickle.load(file)
     show = True
     while show:
-        screen.blit(background_day, (0, 0))
+        screen.blit(gold_medal, (120,180))
+        screen.blit(silver_medal, (117,250))
+        screen.blit(bronze_medal, (118,320))
         screen.blit(flappy_im, (100, 40))
         headline = font1.render("High Scores", True, WHITE)
         screen.blit(headline, (50, 100))
-        line1 = font1.render(str(scores), True, WHITE)
-        screen.blit(line1, (150,300))
+        line1 = font1.render(str(score1), True, WHITE)
+        screen.blit(line1, (200,180))
+        line2 = font1.render(str(score2), True, WHITE)
+        screen.blit(line2, (200, 250))
+        line3 = font1.render(str(score3), True, WHITE)
+        screen.blit(line3, (200, 320))
         line5 = font3.render("Press SPACE to go back.", True, RED)
         screen.blit(line5, (70, 490))
         pygame.display.update()
@@ -229,11 +254,23 @@ def show_records():
                     menu()
 
 def update_high_scores(score):
-    with open('high_score1.dat', 'rb') as file:
-        last_high = pickle.load(file)
-        if score > last_high:
-            with open('high_score1.dat', 'wb') as f:
-                pickle.dump(score, f)
+    with open('high_score4.dat', 'rb') as f4:
+        last_high = pickle.load(f4)
+        if score >= last_high:
+            with open('high_score4.dat', 'wb') as f4:
+                pickle.dump(score, f4)
+        else:
+            with open('high_score3.dat', 'rb') as f3:
+                last_high = pickle.load(f3)
+                if score >= last_high:
+                    with open('high_score3.dat', 'wb') as f3:
+                        pickle.dump(score, f3)
+                else:
+                    with open('high_score2.dat', 'rb') as f2:
+                        last_high = pickle.load(f2)
+                        if score > last_high:
+                            with open('high_score2.dat', 'wb') as f2:
+                                pickle.dump(score, f2)
 
 def menu():
     font = pygame.font.Font('font.TTF', 30)
@@ -407,7 +444,7 @@ def flap():
             pipe.list_bottom.clear()
             show_score(score, 0,'game_over')
             update_high_scores(score)
-            show_score(score, pickle.load(open('high_score1.dat', 'rb')), 'high_score')
+            show_score(score, pickle.load(open('high_score4.dat', 'rb')), 'high_score')
 
         if pipe.collision():
             game = False
