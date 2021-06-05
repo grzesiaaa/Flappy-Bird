@@ -5,7 +5,7 @@
 - [Short description](##Short-description)
 - [Technologies](##Technologies)
 - [How to run this app?](##How-to-run-this-app?)
-- [Screenshots](##Screenshots)
+- [Screenshots](#Screenshots)
 
 
 ### Short description
