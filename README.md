@@ -10,17 +10,17 @@ Flappy Bird is a popular arcade game in which player is moving the bird by tappi
 **Pygame** - Python's library for making games
 
 ### How to run this app?
-1. Clone the template project: \n
-`git clone  https://github.com/grzesiaaa/Game-Template.git FlappyBird`\n
-`cd FlappyBird `
-2. Install the project's development and runtime requirements:\n
+1. Clone the template project: 
+*`git clone  https://github.com/grzesiaaa/Game-Template.git FlappyBird`
+*`cd FlappyBird `
+2. Install the project's development and runtime requirements:
 `pip install -r requirements.txt`
-3. Run the game:\n
+3. Run the game:
 `python FlappyBird.py`
 
 ### Screenshots
 Several screenshots showing the appearance of the game and encouraging you to play :blush:
 
-![](images/screen1.png)
-![](images/screen3.png)
-![](images/screen2.png)
+*![](images/screen1.png)
+*![](images/screen3.png)
+*![](images/screen2.png)
