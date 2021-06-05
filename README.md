@@ -2,9 +2,9 @@
 ## Author: Julia Grzegorzewska
 
 ## Table of contents
-- [Short description](##Short-description)
-- [Technologies](##Technologies)
-- [How to run this app?](##How-to-run-this-app?)
+- [Short description](#Short-description)
+- [Technologies](#Technologies)
+- [How to run this app?](#How-to-run-this-app?)
 - [Screenshots](#Screenshots)
 
 
