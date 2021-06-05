@@ -4,7 +4,7 @@
 ## Table of contents
 - [Short description](#Short-description)
 - [Technologies](#Technologies)
-- [How to run this app?](#How-to-run-this-app?)
+- [How to run this app](#How-to-run-this-app)
 - [Screenshots](#Screenshots)
 
 
@@ -16,7 +16,7 @@ Flappy Bird is a popular arcade game in which player is moving the bird by tappi
 - **Python** - Programming language of whole project
 - **Pygame** - Python's library for making games
 
-### How to run this app?
+### How to run this app
 1. Clone the template project: \
 `git clone  https://github.com/grzesiaaa/Game-Template.git FlappyBird`\
 `cd FlappyBird `
