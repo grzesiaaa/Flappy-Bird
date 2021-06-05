@@ -3,6 +3,7 @@ import os
 import sys
 import random
 import pickle
+
 SCREEN_WIDTH = 400
 SCREEN_HEIGHT = 600
 WHITE = (255, 255, 255)
@@ -124,7 +125,7 @@ class Pipe(pygame.sprite.Sprite):
                 if i.colliderect(bird_col) or j.colliderect(bird_col):
                     return True
 
-def show_score(score, high_score, option):
+def show_score(score, high_score, status):
     """
     Display the score on the screen.
     :param score: gained score to display
@@ -133,13 +134,13 @@ def show_score(score, high_score, option):
     :return: display wanted score
     """
     font = pygame.font.Font('font.TTF', 40)
-    if option == 'game_over':
+    if status == 'game_over':
         result = font.render(f"SCORE: {int(score)}", True, (255, 255, 255))
         screen.blit(result, (120,40))
-    elif option == 'game_in':
+    elif status == 'game_in':
         result = font.render(f"{int(score)}", True, (255, 255, 255))
         screen.blit(result, (185,40))
-    elif option == 'high_score':
+    elif status == 'high_score':
         result = font.render(f"HIGH SCORE: {int(high_score)}", True, (255,255,255))
         screen.blit(result, (70,180))
 
@@ -216,17 +217,12 @@ def author_info():
         screen.blit(flappy_im, (95, 40))
         headline = font1.render("Author", True, WHITE)
         screen.blit(headline, (110, 120))
-        line1 = font2.render("Hi! I am Julia and this is a Flappy Bird", True, BLACK)
-        line2 = font2.render("game - the most annoying game in the", True, BLACK)
-        line3 = font2.render("world! But to be honest one of my", True, BLACK)
-        line4 = font2.render("favourite and that's why I've decided to ", True, BLACK)
-        line5 = font2.render("make it :). I hope you will enjoy it too!", True, BLACK)
+        screen.blit(font2.render("Hi! I am Julia and this is a Flappy Bird", True, BLACK),(20, 190))
+        screen.blit(font2.render("game - the most annoying game in the", True, BLACK), (20, 220))
+        screen.blit(font2.render("world! But to be honest one of my", True, BLACK),(20,250))
+        screen.blit(font2.render("favourite and that's why I've decided to ", True, BLACK), (20,280))
+        screen.blit(font2.render("make it :). I hope you will enjoy it too!", True, BLACK), (20,310))
         line6 = font3.render("Press SPACE to go back.", True, RED)
-        screen.blit(line1, (20, 190))
-        screen.blit(line2, (20, 220))
-        screen.blit(line3,(20,250))
-        screen.blit(line4, (20,280))
-        screen.blit(line5, (20,310))
         screen.blit(line6, (70, 490))
         pygame.display.update()
         fps.tick(100)
@@ -360,18 +356,12 @@ def show_records():
         screen.blit(headline, (50, 100))
         screen.blit(font2.render("EASY", True, WHITE), (50,160))
         screen.blit(font2.render("HARD", True, WHITE), (250,160))
-        line1 = font4.render(str(score1), True, WHITE)
-        screen.blit(line1, (70,205))
-        line2 = font4.render(str(score2), True, WHITE)
-        screen.blit(line2, (70, 260))
-        line3 = font4.render(str(score3), True, WHITE)
-        screen.blit(line3, (70, 315))
-        line4 = font4.render(str(score4), True, WHITE)
-        screen.blit(line4, (270, 205))
-        line5 = font4.render(str(score5), True, WHITE)
-        screen.blit(line5, (270, 260))
-        line6 = font4.render(str(score6), True, WHITE)
-        screen.blit(line6, (270, 315))
+        screen.blit(font4.render(str(score1), True, WHITE), (70,205))
+        screen.blit(font4.render(str(score2), True, WHITE), (70, 260))
+        screen.blit(font4.render(str(score3), True, WHITE), (70, 315))
+        screen.blit(font4.render(str(score4), True, WHITE), (270, 205))
+        screen.blit(font4.render(str(score5), True, WHITE), (270, 260))
+        screen.blit(font4.render(str(score6), True, WHITE), (270, 315))
         line6 = font3.render("Press SPACE to go back.", True, RED)
         screen.blit(line6, (70, 490))
         pygame.display.update()
@@ -557,6 +547,7 @@ def flap(mode, color):
     elif mode == 'hard':
         SHOWPIPE = pygame.USEREVENT
         pygame.time.set_timer(SHOWPIPE, 1000)
+
     bird_mov = 0
     game = True
     score = 0
@@ -602,9 +593,10 @@ def flap(mode, color):
 
         bird_mov += 0.1
         bird_col.centery += bird_mov
+
         if game:
             if bird_col.centery <= 12:
-                bird_col.centery = 12  #sufit
+                bird_col.centery = 12
             if mode == 'hard':
                 floor.position += -2
                 pipe.move(2)
@@ -614,12 +606,12 @@ def flap(mode, color):
             floor.move()
             if floor.position <= -400:
                 floor.position = 0
-            for i in pipe.list_bottom:
-                if i.centerx == bird_col.centerx - 45:
+            for i in pipe.list_top:
+                if i.centerx == bird_col.centerx - 47:
                     score += 1
                     point_sound.play()
             show_score(score, 0,'game_in')
-        if not game:
+        else:
             screen.blit(floor.floor, (0, 500))
             screen.blit(game_over_im, (100, 100))
             screen.blit(click_to_play, (110, 250))
