@@ -6,7 +6,7 @@ I am a student at Wrocław University of Science and Technology and this is my p
 Flappy Bird is a popular arcade game in which player is moving the bird by tapping a space button and try to avoid pipes to get points.
 
 ### Technologies
-**Python** - Programming language of whole project
+**Python** - Programming language of whole project\
 **Pygame** - Python's library for making games
 
 ### How to run this app?
