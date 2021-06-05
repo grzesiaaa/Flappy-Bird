@@ -1,6 +1,11 @@
 # Game Title
 ## Author: Julia Grzegorzewska
 
+## Table of contents
+- [Short description](##short description)
+- [Heading](##Technologies)
+
+
 ### Short description
 I am a student at Wrocław University of Science and Technology and this is my programming project in Python.
 Flappy Bird is a popular arcade game in which player is moving the bird by tapping a space button and try to avoid pipes to get points.
