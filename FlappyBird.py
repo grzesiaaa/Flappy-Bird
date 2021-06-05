@@ -650,4 +650,5 @@ def flap(mode, color):
         fps.tick(100)
 
 
-menu()
+if __name__ == '__main__':
+    menu()
