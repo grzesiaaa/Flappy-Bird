@@ -3,7 +3,6 @@ import os
 import sys
 import random
 import pickle
-
 SCREEN_WIDTH = 400
 SCREEN_HEIGHT = 600
 WHITE = (255, 255, 255)
