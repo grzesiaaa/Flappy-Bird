@@ -13,18 +13,34 @@ BLACK = (0,0,0)
 
 
 def load_image(name):
+    """
+    Upload an image from file and convert it to the surface.
+    :param name: name of the image file
+    :return: converted image
+    """
     fullname = os.path.join("images", name)
     image = pygame.image.load(fullname)
     image = image.convert_alpha()
     return image
 
 def load_sound(name):
+    """
+    Upload a sound from file.
+    :param name: name of the sound file
+    :return: sound
+    """
     fullname = os.path.join("sounds", name)
     sound = pygame.mixer.Sound(fullname)
     return sound
 
 class Bird(pygame.sprite.Sprite):
+    """
+    Class representing a bird.
+    """
     def __init__(self):
+        """
+        Initialize three birds and their rects.
+        """
         pygame.sprite.Sprite.__init__(self)
         self.red_mid = load_image("redbird_mid.png")
         self.red_rect = self.red_mid.get_rect(center=(50, 270))
@@ -35,18 +51,33 @@ class Bird(pygame.sprite.Sprite):
 
 
 class Floor(pygame.sprite.Sprite):
+    """
+    Class representing the floor.
+    """
     def __init__(self):
+        """
+        Initialize the floor and its position.
+        """
         pygame.sprite.Sprite.__init__(self)
         self.floor = pygame.transform.scale(load_image("base.png"), (400, 130))
         self.position = 0
 
     def move(self):
+        """
+        Repeatedly move the floor to the left.
+        """
         screen.blit(self.floor, (self.position, 500))
         screen.blit(self.floor, (self.position + 400, 500))
 
 
 class Pipe(pygame.sprite.Sprite):
+    """
+    Class representing the pipes.
+    """
     def __init__(self):
+        """
+        Initialize top and bottom pipe.
+        """
         pygame.sprite.Sprite.__init__(self)
         self.green_bottom = pygame.transform.scale(load_image("green_bottom.png"), (60, 350))
         self.green_top = pygame.transform.scale(load_image('green_top.png'), (60, 350))
@@ -54,15 +85,28 @@ class Pipe(pygame.sprite.Sprite):
         self.list_top = []
 
     def create_bottom(self):
+        """
+        Create a bottom pipe rectangle.
+        :return: bottom pipe rectangle
+        """
         self.random_height = random.randrange(150, 440)
         self.bottom = self.green_bottom.get_rect(midtop=(430, self.random_height))
         return self.bottom
 
     def create_top(self):
+        """
+        Create a top pipe rectangle.
+        :return: top pipe rectangle
+        """
         self.top = self.green_bottom.get_rect(midbottom=(427, self.bottom.centery - 260))
         return self.top
 
-    def move(self, option):
+    def move(self, option: float):
+        """
+        Move top and bottom pipes repeatedly to the left.
+        :param option: distance by which the pipes move
+        :return: moving pipes
+        """
         for i in self.list_bottom:
             i.centerx -= option
             screen.blit(self.green_bottom, i)
@@ -71,12 +115,24 @@ class Pipe(pygame.sprite.Sprite):
             screen.blit(self.green_top, i)
 
     def collision(self, bird_col):
+        """
+        Check if bird collide with the pipes.
+        :param bird_col: chosen bird rectangle
+        :return: True if collided
+        """
         for i in self.list_bottom:
             for j in self.list_top:
                 if i.colliderect(bird_col) or j.colliderect(bird_col):
                     return True
 
 def show_score(score, high_score, option):
+    """
+    Display the score on the screen.
+    :param score: gained score to display
+    :param high_score: high_score to display
+    :param option: state of the game('game_over', 'game_in' or 'high_score' when displaying the high score)
+    :return: display wanted score
+    """
     font = pygame.font.Font('font.TTF', 40)
     if option == 'game_over':
         result = font.render(f"SCORE: {int(score)}", True, (255, 255, 255))
@@ -116,6 +172,9 @@ bird = Bird()
 floor = Floor()
 
 def rules():
+    """
+    Show rules of the game
+    """
     font1 = pygame.font.Font('font.TTF', 50)
     font2 = pygame.font.SysFont('arial', 20)
     font3 = pygame.font.SysFont('Consolas', 20)
@@ -146,6 +205,9 @@ def rules():
                     menu()
 
 def author_info():
+    """
+    Show info about author of this game"
+    """
     font1 = pygame.font.Font('font.TTF', 50)
     font2 = pygame.font.SysFont('arial', 25)
     font3 = pygame.font.SysFont('Consolas', 20)
@@ -179,6 +241,9 @@ def author_info():
                     menu()
 
 def choose_options():
+    """
+    Show screen with possible game options which player can choose and start the game after choosing.
+    """
     font1 = pygame.font.Font('font.TTF', 50)
     font2 = pygame.font.SysFont('arial', 20)
     font3 = pygame.font.SysFont('Consolas', 20)
@@ -229,6 +294,9 @@ def choose_options():
         fps.tick(100)
 
 def show_options():
+    """
+    Only show possible options of the game.
+    """
     font1 = pygame.font.Font('font.TTF', 50)
     font2 = pygame.font.SysFont('arial', 25)
     font3 = pygame.font.SysFont('Consolas', 20)
@@ -260,6 +328,9 @@ def show_options():
 
 
 def show_records():
+    """
+    Show the screen with three high scores in easy and hard mode.
+    """
     font1 = pygame.font.Font('font.TTF', 50)
     font2 = pygame.font.SysFont('arial', 30)
     font3 = pygame.font.SysFont('Consolas', 20)
@@ -316,6 +387,10 @@ def show_records():
                     menu()
 
 def update_easy_high_scores(score):
+    """
+    Update the high score of game easy mode and write it to the appropriate file.
+    :param score: gained score
+    """
     with open('high_score4.dat', 'rb') as f4:
         last_high = pickle.load(f4)
         if score >= last_high:
@@ -335,6 +410,10 @@ def update_easy_high_scores(score):
                                 pickle.dump(score, f2)
 
 def update_hard_high_scores(score):
+    """
+    Update the high score of game hard mode and write it to the appropriate file.
+    :param score: gained score
+    """
     with open('high_score7.dat', 'rb') as f7:
         last_high = pickle.load(f7)
         if score >= last_high:
@@ -354,6 +433,9 @@ def update_hard_high_scores(score):
                                 pickle.dump(score, f5)
 
 def menu():
+    """
+    Show screen with the main menu.
+    """
     font = pygame.font.Font('font.TTF', 30)
     font2 = pygame.font.SysFont('Consolas', 20)
     text = font2.render("Use arrow keys to navigate.", True, RED)
@@ -465,6 +547,11 @@ def menu():
         fps.tick(100)
 
 def flap(mode, color):
+    """
+    Main game - Flappy Bird.
+    :param mode: 'easy' or 'hard'
+    :param color: color of the bird (red, yellow or blue)
+    """
     if mode == 'easy':
         SHOWPIPE = pygame.USEREVENT
         pygame.time.set_timer(SHOWPIPE, 2300)
