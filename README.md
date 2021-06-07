@@ -1,4 +1,4 @@
-# Game Title
+# Flappy Bird
 ## Author: Julia Grzegorzewska
 
 ## Table of contents
