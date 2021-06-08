@@ -18,7 +18,7 @@ Flappy Bird is a popular arcade game in which player is moving the bird by tappi
 
 ### How to run this app
 1. Clone the template project: \
-`git clone  https://github.com/grzesiaaa/Flappy_Bird.git FlappyBird`
+`git clone  https://github.com/grzesiaaa/Flappy-Bird.git FlappyBird`
 2. Go to folder with the game:\
 `cd FlappyBird `
 3. Install the project's development and runtime requirements:\
