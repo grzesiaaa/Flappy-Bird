@@ -412,13 +412,13 @@ def update_hard_high_scores(score):
             with open('high_score6.dat', 'rb') as f6:
                 last_high = pickle.load(f6)
                 if score >= last_high:
-                    with open('high_score3.dat', 'wb') as f6:
+                    with open('high_score6.dat', 'wb') as f6:
                         pickle.dump(score, f6)
                 else:
                     with open('high_score5.dat', 'rb') as f5:
                         last_high = pickle.load(f5)
                         if score > last_high:
-                            with open('high_score2.dat', 'wb') as f5:
+                            with open('high_score5.dat', 'wb') as f5:
                                 pickle.dump(score, f5)
 
 def menu():
